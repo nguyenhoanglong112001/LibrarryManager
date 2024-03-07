@@ -1,0 +1,7 @@
+D:\BTC#\LibraryManager\LibraryManager\bin\Debug\LibraryManager.exe.config
+D:\BTC#\LibraryManager\LibraryManager\bin\Debug\LibraryManager.exe
+D:\BTC#\LibraryManager\LibraryManager\bin\Debug\LibraryManager.pdb
+D:\BTC#\LibraryManager\LibraryManager\obj\Debug\LibraryManager.csproj.AssemblyReference.cache
+D:\BTC#\LibraryManager\LibraryManager\obj\Debug\LibraryManager.csproj.CoreCompileInputs.cache
+D:\BTC#\LibraryManager\LibraryManager\obj\Debug\LibraryManager.exe
+D:\BTC#\LibraryManager\LibraryManager\obj\Debug\LibraryManager.pdb
