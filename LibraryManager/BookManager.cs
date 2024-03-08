@@ -18,6 +18,11 @@ namespace LibraryManager
             new Book("6","Hunger Game","Suzanne Collins",16000),
             new Book("7","The Witcher","Andrsej Sapkowski",20000)
         };
+
+        public BookManager()
+        {
+            Program.showbook = ShowBooks;
+        }
         public void BookBorrow(Book book)
         {
             listbook.Remove(book);
@@ -26,6 +31,13 @@ namespace LibraryManager
         public void BookReturn(Book book)
         {
             listbook.Add(book);
+        }
+        public void ShowBooks(Action<Book> callback)
+        {
+            foreach (var book in listbook)
+            {
+                callback?.Invoke(book);
+            }
         }
     }
 }

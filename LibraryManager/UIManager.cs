@@ -1,7 +1,10 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.IO;
 using System.Linq;
+using System.Reflection.Emit;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -30,6 +33,8 @@ namespace LibraryManager
             Console.WriteLine("----------Library Manager----------");
             Console.WriteLine("1. Thong tin thanh vien");
             Console.WriteLine("2. Danh sach sach trong thu vien");
+            Console.WriteLine("3. Danh sach da muon");
+            Console.WriteLine("4. Dang xuat");
             int select = InputInt("Lua chon cua ban: ");
             if (select == 1)
             {
@@ -39,13 +44,22 @@ namespace LibraryManager
             {
                 ShowlistBook();
             }
+            else if (select == 3)
+            {
+                ShowBorrowList();
+            }
+            else if (select == 4)
+            {
+                LoginMenu();
+            }
         }
+
 
         public void ShowlistBook()
         {
             Console.Clear();
             Console.WriteLine("-----------Danh sach sach-------------------");
-            for (int i=0;i<Program.bookmanager.listbook.Count;i++)
+            for (int i = 0; i < Program.bookmanager.listbook.Count; i++)
             {
                 if (Program.bookmanager.listbook[i] != null)
                 {
@@ -106,8 +120,8 @@ namespace LibraryManager
         {
             Console.Clear();
             Console.WriteLine("----------Member Information----------");
-            Console.WriteLine($"Ho ten: {Program.user.username}");
-            Console.WriteLine($"Userid: {Program.user.userid}");
+            Console.WriteLine($"Username: {Program.user.username}");
+            Console.WriteLine($"Ho ten: {Program.user.name}");
             string formattedDate = Program.user.birthdate.ToString("dd/MM/yyyy");
             Console.WriteLine($"Ngay thang nam sinh: {formattedDate}");
             Console.WriteLine($"So du: {Program.user.balance}");
@@ -123,45 +137,71 @@ namespace LibraryManager
         public void Register()
         {
             Console.Clear();
-            string username = InputStr("Ho ten: ");
-            string userid = InputStr("Userid: ");
+            string json = File.ReadAllText("Data.json");
+            Data data = JsonConvert.DeserializeObject<Data>(json);
+            Label:
+            string username = InputStr("username: ");
+            foreach(var tk in data.users.Values)
+            {
+                if (username.Equals(tk.username))
+                {
+                    Console.WriteLine("Da ton tai tai khoan tren vui long nhap lai");
+                    goto Label;
+                }
+            }
+            string password = InputStr("Password: ");
+            string name = InputStr("Ho ten: ");
             string birthdate = InputStr("Ngay thang nam sinh: ");
             int balance = InputInt("So du: ");
 
-            Program.user = new User(username,DateTime.Parse(birthdate),userid,balance);
+            Program.user = new User(username,DateTime.Parse(birthdate),name,balance,password);
+            data.users.Add(username, Program.user);
+            string newJson = JsonConvert.SerializeObject(data);
+            File.WriteAllText("Data.json", newJson);
             Console.WriteLine("Tao tai khoan thanh cong");
             Console.ReadKey();
             LoginMenu();
         }
 
-        public bool CanLogin(string username)
-        {
-            if (Program.user.username != username)
-            {
-                return false;
-            }
-            return true;
-        }
-
         public void Login()
         {
             Console.Clear();
-            if (Program.user == null)
+            Console.WriteLine("==========Dang nhap===========");
+            string username = InputStr("username: ");
+            string password = InputStr("password: ");
+
+            string json = File.ReadAllText("Data.json");
+            Data data = JsonConvert.DeserializeObject< Data>(json);
+
+            if (data.users.Any(u => u.Value.username.Equals(username) &&  u.Value.password.Equals(password)))
             {
-                Console.WriteLine("Ban chua tao tai khoan vui long dang ky");
-                LoginMenu();
-            }
-            string username = InputStr("Username: ");
-            if (CanLogin(username))
-            {
-                Console.WriteLine("Chao mung ban den voi chuong trinh quan ly");
+                Console.WriteLine("Dang nhap thanh cong");
                 Console.ReadKey();
                 MainMenu();
             }
             else
             {
-                Console.WriteLine("Sai username vui long nhap lai");
-                LoginMenu();
+                Console.WriteLine("tai khoan khong ton tai tren he thong ban co muon dang ky tai khoan nay khong");
+                string result = InputStr("Nhap lua chon: ");
+                if (result.Equals("Y") || result.Equals("y"))
+                {
+                    string name = InputStr("Ho ten: ");
+                    string birthdate = InputStr("Ngay thang nam sinh: ");
+                    int balance = InputInt("So du: ");
+
+                    User newUser = new User(username, DateTime.Parse(birthdate),name, balance,password);
+                    data.users.Add(username, newUser);
+
+                    string newjson = JsonConvert.SerializeObject(data);
+                    File.WriteAllText("Data.json", newjson);
+                    Console.WriteLine("Dang ky tai khoan thanh cong, vui long thuc hien dang nhap lai");
+                    Console.ReadKey();
+                    LoginMenu();
+                }
+                else
+                {
+                    LoginMenu();
+                }
             }
         }
 
@@ -185,9 +225,47 @@ namespace LibraryManager
 
         public void ShowBorrowList()
         {
-            foreach(KeyValuePair<string,DateTime> kvp in Program.user.books)
+            int i = 0;
+            foreach(KeyValuePair<Book,DateTime> kvp in Program.user.books)
             {
-                Console.WriteLine($"{kvp.Key} , {kvp.Value}");
+                Console.WriteLine($"{kvp.Key.bookname} , {kvp.Value}");
+                i++;
+            }
+            Console.WriteLine("1. Tra sach");
+            Console.WriteLine("2. Quay lai");
+            int select = InputInt("Nhap lua chon cua ban: ");
+            if (select == 1)
+            {
+                int index = InputInt("Nhap sach muon tra: ");
+                string datereturn = InputStr("Nhap ngay tra sach: ");
+                TimeSpan diff = DateTime.Parse(datereturn) - Program.user.books.ElementAt(index - 1).Value;
+                int datediff = (int)diff.TotalDays;
+                Console.WriteLine("Thong tin sach tra lai: ");
+                Console.WriteLine($"{Program.user.books.ElementAt(index - 1).Key.bookname} \t {Program.user.books.ElementAt(index - 1).Key.price * datediff}");
+                Console.WriteLine("Xac nhan tra sach");
+                string choice = InputStr("Y/y: Dong y , N/n: Tu choi: ");
+                if (choice.Equals("Y") || choice.Equals("y"))
+                {
+                    if (Program.user.CheckBalance(Program.user.books.ElementAt(index - 1).Key, datediff))
+                    {
+                        Program.bookmanager.BookReturn(Program.user.books.ElementAt(index - 1).Key);
+                        Program.user.ReturnBook((Program.user.books.ElementAt(index - 1).Key), datediff);
+                        Console.WriteLine("tra sach thanh cong");
+                        Console.WriteLine($"So du con lai: {Program.user.balance}");
+                        Console.ReadKey();
+                        MainMenu();
+                    }
+                    else
+                    {
+                        Console.WriteLine("Khong du so du de tra sach vui long nap them tien");
+                        Console.ReadKey();
+                        MainMenu();
+                    }
+                }
+                else if (choice.Equals("n") || choice.Equals("N"))
+                {
+                    MainMenu();
+                }
             }
         }
     }

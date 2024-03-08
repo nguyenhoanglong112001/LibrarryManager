@@ -1,0 +1,12 @@
+{
+	"users" : {
+		"long" : {
+			"books" : {},
+			"username" : "long",
+			"password" : "123456",
+			"birthdate" : "2001-01-11T00:00:00",
+			"name" : "nguyen hoang long",
+			"balance" : 10000000
+		}
+	}
+}

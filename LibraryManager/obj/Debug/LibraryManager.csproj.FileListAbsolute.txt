@@ -5,3 +5,13 @@ D:\BTC#\LibraryManager\LibraryManager\obj\Debug\LibraryManager.csproj.AssemblyRe
 D:\BTC#\LibraryManager\LibraryManager\obj\Debug\LibraryManager.csproj.CoreCompileInputs.cache
 D:\BTC#\LibraryManager\LibraryManager\obj\Debug\LibraryManager.exe
 D:\BTC#\LibraryManager\LibraryManager\obj\Debug\LibraryManager.pdb
+D:\LibraryManager\LibraryManager\bin\Debug\LibraryManager.exe.config
+D:\LibraryManager\LibraryManager\bin\Debug\LibraryManager.exe
+D:\LibraryManager\LibraryManager\bin\Debug\LibraryManager.pdb
+D:\LibraryManager\LibraryManager\obj\Debug\LibraryManager.csproj.AssemblyReference.cache
+D:\LibraryManager\LibraryManager\obj\Debug\LibraryManager.csproj.CoreCompileInputs.cache
+D:\LibraryManager\LibraryManager\obj\Debug\LibraryManager.exe
+D:\LibraryManager\LibraryManager\obj\Debug\LibraryManager.pdb
+D:\LibraryManager\LibraryManager\bin\Debug\Newtonsoft.Json.dll
+D:\LibraryManager\LibraryManager\bin\Debug\Newtonsoft.Json.xml
+D:\LibraryManager\LibraryManager\obj\Debug\LibraryManager.csproj.CopyComplete
