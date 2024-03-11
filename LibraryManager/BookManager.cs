@@ -18,11 +18,6 @@ namespace LibraryManager
             new Book("6","Hunger Game","Suzanne Collins",16000),
             new Book("7","The Witcher","Andrsej Sapkowski",20000)
         };
-
-        public BookManager()
-        {
-            Program.showbook = ShowBooks;
-        }
         public void BookBorrow(Book book)
         {
             listbook.Remove(book);
